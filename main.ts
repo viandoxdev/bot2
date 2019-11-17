@@ -3,17 +3,28 @@ import fs from 'fs';
 import dbm from './ts/dbm';
 
 const client = new Discord.Client();
-let conf: Conf;
 
 
 interface Conf {
     prefix: string,
     token: string
 }
+interface AccountObject {
+    [propname: string]: {
+        config: userConfigInterface,
+        messages: number,
+        coins: number,
+    }
+}
+interface userConfigInterface {
+
+}
 
 async function Initialization() {
+    let conf :Conf;
+    let accs :AccountObject;
     await dbm.init();
-    
+    accs = await dbm.getAccounts();
     if (fs.existsSync('./conf.json')) {
         const parsedJson: Conf = JSON.parse(fs.readFileSync('./conf.json').toString());
         if (parsedJson.token === "YOUR TOKEN HERE") {
@@ -29,16 +40,27 @@ async function Initialization() {
         process.exit(0);
     }
     console.log('init finalized')
+    //@ts-ignore
+    return {conf: conf, accs, accs}
 }
     
-function AfterInitialization() {
+function AfterInitialization({conf, accs}: {conf: Conf, accs: AccountObject}) {
     client.on('ready', () => {
         console.log('bot working !');
     });
 
     client.on('message', msg => {
-        if (msg.content === conf.prefix + "test") {
-            msg.channel.send(`<@${msg.author.id}> , it's working`)
+        if (msg.content === conf.prefix + "acc") {
+            if(accs[msg.author.id] === undefined) {
+                accs[msg.author.id] = {
+                    config: {},
+                    coins: 0,
+                    messages: 0,
+                }
+                dbm.setAccounts(accs);
+                msg.channel.send('account created');
+            }
+                msg.channel.send(JSON.stringify(accs[msg.author.id]));
         }
     })
 }

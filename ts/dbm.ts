@@ -1,8 +1,17 @@
 import sqlite3 from 'sqlite3';
 import { isNull } from 'util';
+import { Interface } from 'readline';
 let Database : sqlite3.Database;
+interface AccountObject {
+    [propname: string]: {
+        config: userConfigInterface,
+        messages: number,
+        coins: number,
+    }
+}
+interface userConfigInterface {
 
-
+}
 export default {
     async init() {
         Database = await sqlite3Database('./db/database.db3');
@@ -15,7 +24,27 @@ export default {
         );`);
     },
     async getAccounts() {
-
+        const res: AccountObject = {};
+        await sqlite3Each(Database, 'SELECT * FROM account', (err, row) => {
+            res[row.id] = {
+                config: row.config,
+                messages: row.messages,
+                coins: row.coins
+            }
+        })
+        return res;
+    },
+    async setAccounts(acc: AccountObject) {
+        const accs :AccountObject = await this.getAccounts();
+        if(JSON.stringify(acc) == JSON.stringify(accs)) return;
+        for(let i in acc) {
+            const e = acc[i];
+            if(accs[i] === undefined) {
+                await sqlite3Run(Database, "INSERT INTO account values(?, ?, ?, ?)", [i, e.config, e.messages, e.coins]);
+            } else {
+                await sqlite3Run(Database, "UPDATE account SET config = ?, messages = ?, coins = ? WHERE id = ?", [e.config, e.messages, e.coins, i]);
+            }
+        }
     }
 }
 
@@ -41,4 +70,16 @@ function sqlite3Run(db :sqlite3.Database, sql: string, ...params: any[]) {
             }
         })
     });
+}
+
+function sqlite3Each(db :sqlite3.Database, sql: string, callBack?: ((this :sqlite3.Statement, err :Error | null, row: any) => void)) {
+    return new Promise((res, rej) => {
+        const ret = db.each(sql, callBack, err => {
+            if(!isNull(err)) {
+                rej(err);
+            } else {
+                res(ret);
+            }
+        })
+    })
 }
