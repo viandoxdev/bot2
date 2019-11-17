@@ -4,6 +4,7 @@
   "description": "",
   "main": "main.js",
   "scripts": {
+    "run": "node main",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
