@@ -1,8 +1,9 @@
+///<reference path="./ts/types.d.ts" />
 import Discord from 'discord.js';
 import fs from 'fs';
 import dbm from './ts/dbm';
-import './ts/types';
 import * as commands from './ts/index'
+import utils from './ts/utils';
 
 const client = new Discord.Client();
 
@@ -37,21 +38,19 @@ function AfterInitialization({conf, accs}: {conf: Conf, accs: AccountObject}) {
     });
 
     client.on('message', msg => {
-        if (msg.content === conf.prefix + "acc") {
-            if(getAcc(msg, accs) === undefined) {
-                accs[`<${msg.author.id}>`] = {
-                    config: {},
-                    coins: 0,
-                    messages: 0,
+        if(msg.content.startsWith(conf.prefix)) {
+            const noPrefixSplitedcommand = () => {return msg.content.split('').splice(conf.prefix.length, msg.content.split('').length - conf.prefix.length).join('').split(' ');}
+            const args = noPrefixSplitedcommand().splice(1, noPrefixSplitedcommand.length-1);
+            const msgCom = noPrefixSplitedcommand().splice(0, 1).join('');
+            for(let com in commands) {
+                if(msgCom === com) {
+                    //@ts-ignore
+                    commands[com](accs, msg, client, args, conf).then(e => dbm.setAccounts(e));
+                    //commands[com](accs, msg, client, args, conf).then(dbm.setAccounts); not working
                 }
-                dbm.setAccounts(accs);
-                msg.channel.send('account created');
             }
-                msg.channel.send(JSON.stringify(getAcc(msg, accs)));
         }
     })
 }
-function getAcc(msg :Discord.Message, accs: AccountObject) {
-    return accs[`<${msg.author.id}>`];
-}
+
 Initialization().then(AfterInitialization);
