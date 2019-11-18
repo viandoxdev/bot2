@@ -1,0 +1,1 @@
+export { default as acc } from './commands/acc'

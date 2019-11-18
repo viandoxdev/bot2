@@ -1,24 +1,11 @@
 import Discord from 'discord.js';
 import fs from 'fs';
 import dbm from './ts/dbm';
+import './ts/types';
+import * as commands from './ts/index'
 
 const client = new Discord.Client();
 
-
-interface Conf {
-    prefix: string,
-    token: string
-}
-interface AccountObject {
-    [propname: string]: {
-        config: userConfigInterface,
-        messages: number,
-        coins: number,
-    }
-}
-interface userConfigInterface {
-
-}
 
 async function Initialization() {
     let conf :Conf;
@@ -51,8 +38,8 @@ function AfterInitialization({conf, accs}: {conf: Conf, accs: AccountObject}) {
 
     client.on('message', msg => {
         if (msg.content === conf.prefix + "acc") {
-            if(accs[msg.author.id] === undefined) {
-                accs[msg.author.id] = {
+            if(getAcc(msg, accs) === undefined) {
+                accs[`<${msg.author.id}>`] = {
                     config: {},
                     coins: 0,
                     messages: 0,
@@ -60,9 +47,11 @@ function AfterInitialization({conf, accs}: {conf: Conf, accs: AccountObject}) {
                 dbm.setAccounts(accs);
                 msg.channel.send('account created');
             }
-                msg.channel.send(JSON.stringify(accs[msg.author.id]));
+                msg.channel.send(JSON.stringify(getAcc(msg, accs)));
         }
     })
 }
-
+function getAcc(msg :Discord.Message, accs: AccountObject) {
+    return accs[`<${msg.author.id}>`];
+}
 Initialization().then(AfterInitialization);

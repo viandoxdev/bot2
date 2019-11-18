@@ -26,8 +26,9 @@ export default {
     async getAccounts() {
         const res: AccountObject = {};
         await sqlite3Each(Database, 'SELECT * FROM account', (err, row) => {
+            console.log(row);
             res[row.id] = {
-                config: row.config,
+                config: JSON.parse(row.config),
                 messages: row.messages,
                 coins: row.coins
             }
@@ -40,9 +41,9 @@ export default {
         for(let i in acc) {
             const e = acc[i];
             if(accs[i] === undefined) {
-                await sqlite3Run(Database, "INSERT INTO account values(?, ?, ?, ?)", [i, e.config, e.messages, e.coins]);
+                await sqlite3Run(Database, "INSERT INTO account values(?, ?, ?, ?)", [i, JSON.stringify(e.config), e.messages, e.coins]);
             } else {
-                await sqlite3Run(Database, "UPDATE account SET config = ?, messages = ?, coins = ? WHERE id = ?", [e.config, e.messages, e.coins, i]);
+                await sqlite3Run(Database, "UPDATE account SET config = ?, messages = ?, coins = ? WHERE id = ?", [JSON.stringify(e.config), e.messages, e.coins, i]);
             }
         }
     }
@@ -62,7 +63,7 @@ function sqlite3Database(filename: string) :Promise<sqlite3.Database>  {
 
 function sqlite3Run(db :sqlite3.Database, sql: string, ...params: any[]) {
     return new Promise((res, rej) => {
-        const ret = db.run(sql, params, err => {
+        const ret = db.run(sql, ...params, (err: Error) => {
             if(!isNull(err)) {
                 rej(err);
             } else {
