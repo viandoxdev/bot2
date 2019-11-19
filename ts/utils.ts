@@ -42,7 +42,7 @@ export default {
                 break;
             }
         }
-        return lvl;
+        return {lvl, msgStock, msgCap};
     }
 }
 
