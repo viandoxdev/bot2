@@ -75,17 +75,21 @@ export default async function (acc :ToastAccount, client: Discord.User) :Promise
     let username = '';
     let usernameT :string[] = [];
     let oT = client.username.split('');
+    let toolong = true;
     while (ctx.measureText(username).width < maxWidth) {
         usernameT.push(oT.splice(0, 1).join(''));
         username = usernameT.join('');
-        if(oT.length < 1 ) break;
+        if(oT.length < 1 ) {toolong=false;break;};
+    }
+    if(toolong) {
+        username = username.slice(0, username.length - 2)
     }
     const lvlOff = 1000 - ctx.measureText(`LVL ${utils.calcLvlFromMsg(acc.messages).lvl}X`).width;
     ctx.fillText(username, pdpCX*2, 20+50, maxWidth)
     ctx.fillText('LVL '+utils.calcLvlFromMsg(acc.messages).lvl, lvlOff, 20+50);
     ctx.font = '40px \'Montserrat\', sans-serif';
     ctx.fillStyle ="grey"
-    ctx.fillText("#"+client.discriminator,pdpCX*2 + ctx.measureText(username+'X..').width, 20+50, 1000-pdpCX*2+2*xpSize);
+    ctx.fillText("#"+client.discriminator,pdpCX*2 + ctx.measureText(username+'X..'+(toolong ? 'X' : '')).width, 20+50, 1000-pdpCX*2+2*xpSize);
     ctx.fillStyle = "white"
     ctx.fillText(`messages: ${acc.messages}`, pdpCX*2 + xpSize, (20+50)*2);
     ctx.fillText(`coins: ${acc.coins}`, pdpCX*2, (20+50)*3);
