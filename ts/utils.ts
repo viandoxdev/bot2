@@ -43,6 +43,9 @@ export default {
             }
         }
         return {lvl, msgStock, msgCap};
+    },
+    nearestPow2( aSize :number ){
+        return Math.pow( 2, Math.round( Math.log( aSize ) / Math.log( 2 ) ) ); 
     }
 }
 
