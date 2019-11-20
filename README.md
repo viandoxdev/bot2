@@ -8,7 +8,7 @@
    $ git clone https://github.com/js-all/bot2.git
    ```
 
-### 2. install the modules
+### 2. install the modules and typescript if nescessary
 
    ```shell
    $ npm i
@@ -23,7 +23,7 @@
 ### 4. run it once and exit with ctrl+c
 
    ```shell
-   $ npm run
+   $ npm start
    ```
 
 ### 5. edit the conf.json file and put your application token
@@ -38,5 +38,5 @@
 ### 6. and you'r good to go just run it again and it will work
 
    ```shell
-    $ npm run 
+    $ npm start
    ```

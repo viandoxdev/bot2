@@ -32,7 +32,7 @@ export default async function (acc :ToastAccount, client: Discord.User) :Promise
     ctx.save();
     ctx.stroke();
     ctx.clip();
-    const pdp = await loadImage(client.displayAvatarURL);
+    const pdp = await loadImage(client.avatarURL.split('?')[0] + '?size=' + utils.nearestPow2(ch-xpSize * 4));
     ctx.drawImage(pdp, xpSize*2,xpSize*2, ch-xpSize * 4, ch - xpSize * 4);
     ctx.restore();
     ctx.beginPath();
