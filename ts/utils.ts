@@ -38,10 +38,12 @@ export default {
                     msgCap = 200;
                 break;
                 default:
-                    msgCap *= msgCap * (1/160)
+                    msgCap += msgCap * (1/8)
                 break;
             }
         }
+        msgStock = Math.floor(msgStock);
+        msgCap = Math.floor(msgCap);
         return {lvl, msgStock, msgCap};
     },
     nearestPow2( aSize :number ){
