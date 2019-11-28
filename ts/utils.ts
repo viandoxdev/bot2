@@ -5,6 +5,24 @@ export default {
     getAcc(msg: Discord.Message, accs: AccountObject) {
         return accs[`<${msg.author.id}>`];
     },
+    getAccCreate(msg: Discord.Message, accs: AccountObject, id? : string) {
+        const ID = id === undefined ? msg.author.id : id;
+        let acc: ToastAccount = accs[`<${ID}>`];
+        if (acc === undefined) {
+            accs[`<${ID}>`] = {
+                config: {
+                    bannedCommand: []
+                },
+                coins: 0,
+                messages: 0,
+            }
+            msg.channel.send('account created');
+        }
+        return acc
+    },
+    isBanned(com :string, acc: ToastAccount) {
+        return acc.config.bannedCommand.indexOf(com) !== -1;
+    },
     calcLvlFromMsg(msg :number) {
         let msgCap = 10;
         let msgStock = msg;

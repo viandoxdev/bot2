@@ -1,6 +1,7 @@
 interface Conf {
     prefix: string,
-    token: string
+    token: string,
+    banMessage: string
 }
 interface AccountObject {
     [propname: string]: ToastAccount
@@ -12,5 +13,5 @@ interface ToastAccount {
     coins: number
 }
 interface userConfigInterface {
-
+    bannedCommand: string[]
 }

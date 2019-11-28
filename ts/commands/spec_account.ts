@@ -7,17 +7,11 @@ export default async function _(accs: AccountObject, msg: Discord.Message, clien
     const id = args[0].replace(/[<>@]/g, '');
     try {
         const user = await client.fetchUser(id);
-        let acc = accs[`<${id}>`];
-        if (acc === undefined) {
-            accs[`<${id}>`] = {
-                config: {},
-                coins: 0,
-                messages: 0,
-            }
-            msg.channel.send('account created');
-            acc = accs[`<${id}>`];
-        }
-
+        const acc = utils.getAccCreate(msg, accs, id);
+        if(utils.isBanned('spec_account', acc)) {
+            msg.channel.send(conf.banMessage.replace(/\$\{user\}/, `<@${msg.author.id}>`));
+            return accs;
+        }   
         msg.channel.send(`${user.tag}'s card`, new Discord.Attachment(await card(accs[`<${id}>`], user)));
     } catch(e) {
         msg.channel.send('invalid user');

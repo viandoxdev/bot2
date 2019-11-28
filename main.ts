@@ -43,7 +43,9 @@ function AfterInitialization({ conf, accs }: { conf: Conf, accs: AccountObject }
             if (acc === undefined && msg.author.bot === false) {
 
                 accs[`<${msg.author.id}>`] = {
-                    config: {},
+                    config: {
+                        bannedCommand: []
+                    },
                     coins: 0,
                     messages: 0,
                 }
