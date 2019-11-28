@@ -10,7 +10,8 @@ interface AccountObject {
 interface ToastAccount {
     config: userConfigInterface,
     messages: number,
-    coins: number
+    coins: number,
+    rank: number
 }
 interface userConfigInterface {
     bannedCommand: string[]

@@ -48,8 +48,9 @@ function AfterInitialization({ conf, accs }: { conf: Conf, accs: AccountObject }
                     },
                     coins: 0,
                     messages: 0,
+                    rank: 0
                 }
-                acc = utils.getAcc(msg, accs);;
+                acc = utils.getAcc(msg, accs);
             } else if (acc === undefined && msg.author.bot) {
                 return;
             }

@@ -14,6 +14,7 @@ const obj = {
             "config"	TEXT DEFAULT '{}',
             "messages"	INTEGER DEFAULT 0,
             "coins"	INTEGER DEFAULT 0,
+            "rank" INTEGER DEFAULT 0,
             PRIMARY KEY("id")
             );`);
     },
@@ -23,7 +24,8 @@ const obj = {
             res[row.id] = {
                 config: JSON.parse(row.config),
                 messages: row.messages,
-                coins: row.coins
+                coins: row.coins,
+                rank: row.rank
             }
         })
         return res;
@@ -35,9 +37,9 @@ const obj = {
         for (let i in acc) {
             const e = acc[i];
             if (accs[i] === undefined) {
-                await sqlite3Run(Database, "INSERT INTO account values(?, ?, ?, ?)", [i, JSON.stringify(e.config), e.messages, e.coins]);
+                await sqlite3Run(Database, "INSERT INTO account values(?, ?, ?, ?, ?)", [i, JSON.stringify(e.config), e.messages, e.coins, e.rank]);
             } else {
-                await sqlite3Run(Database, "UPDATE account SET config = ?, messages = ?, coins = ? WHERE id = ?", [JSON.stringify(e.config), e.messages, e.coins, i]);
+                await sqlite3Run(Database, "UPDATE account SET config = ?, messages = ?, coins = ?, rank = ? WHERE id = ?", [JSON.stringify(e.config), e.messages, e.coins, e.rank, i]);
             }
         }
     }

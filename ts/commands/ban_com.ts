@@ -4,12 +4,17 @@ import utils from '../utils';
 import * as coms from '../index';
 
 export default async function _(accs: AccountObject, msg: Discord.Message, client: Discord.Client, args: string[], conf: Conf) {
-    if(msg.author.id !== '299165255639105536') return accs;
     const id = args[0].replace(/[<>@]/g, '');
     const com = args[1];
+    const uacc = utils.getAcc(msg, accs);
+    if(uacc.rank === 0) return;
     try {
         const user = await client.fetchUser(id);
         let acc = utils.getAccCreate(msg, accs, id);
+        if(acc.rank >= uacc.rank) {
+            msg.channel.send(`you can't ban a command from a user without being an administrator`)
+            return accs
+        };
         if(utils.isBanned('ban_com', acc)) {
             msg.channel.send(conf.banMessage.replace(/\$\{user\}/, `<@${msg.author.id}>`));
             return accs;
