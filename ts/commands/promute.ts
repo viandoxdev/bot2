@@ -8,7 +8,7 @@ export default async function _(accs: AccountObject, msg: Discord.Message, clien
         msg.channel.send(conf.banMessage.replace(/\$\{user\}/, `<@${msg.author.id}>`));
         return accs;
     }
-    const id = args[0].replace(/[<>@]/g, '');
+    const id = args[0].replace(/[!<>@]/g, '');
     const promRank = parseInt(args[1]);
     if (promRank < 0 || promRank > 2) {
         msg.channel.send(`invalid rank, <@${msg.author.id}>`)
