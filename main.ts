@@ -35,6 +35,7 @@ async function Initialization() {
 function AfterInitialization({ conf, accs }: { conf: Conf, accs: AccountObject }) {
     client.on('ready', () => {
         console.log('bot working !');
+        updateActivity(conf);
     });
 
     client.on('message', msg => {
@@ -58,7 +59,7 @@ function AfterInitialization({ conf, accs }: { conf: Conf, accs: AccountObject }
             acc.messages += 1;
             const lvla = utils.calcLvlFromMsg(acc.messages).lvl;
             if (lvlb !== lvla) {
-                if(!msg.author.bot)msg.channel.send(`congratulation, <@${msg.author.id}>, you've passed lvl ${lvla} and won ${lvla * lvla * 100} coins !`)
+                if (!msg.author.bot) msg.channel.send(`congratulation, <@${msg.author.id}>, you've passed lvl ${lvla} and won ${lvla * lvla * 100} coins !`)
                 acc.coins += lvla * lvla * 100;
             }
 
@@ -70,10 +71,10 @@ function AfterInitialization({ conf, accs }: { conf: Conf, accs: AccountObject }
                 let com1 = t.splice(0, 1).join('');
                 let com = com1.slice(conf.prefix.length, com1.length);
                 let args = t;
-                return {com, t};
+                return { com, t };
             }
-            const {t:args} = noPrefixSplitedcommand();
-            const {com:msgCom} = noPrefixSplitedcommand();
+            const { t: args } = noPrefixSplitedcommand();
+            const { com: msgCom } = noPrefixSplitedcommand();
             let passed = false;
             for (let com in commands) {
                 if (msgCom === com) {
@@ -93,6 +94,31 @@ function AfterInitialization({ conf, accs }: { conf: Conf, accs: AccountObject }
             dbm.setAccounts(accs);
         }
     })
+}
+
+function updateActivity(conf: Conf) {
+    const date = new Date();
+    const nDate = new Date('January 1, ' + (date.getFullYear() + 1) + ' 00:00:00')
+    const rem = nDate.getTime() - date.getTime();;
+    const h = rem / (60 * 60 * 1000);
+    const H = Math.floor(h);
+    const m = (h - H) * 60;
+    const M = Math.floor(m);
+    const s = (m - M) * 60;
+    const S = Math.floor(s);
+    const f = new Date('january 1, ' + (date.getFullYear() + 1) + ' 00:00:00').getTime() - new Date('january 1, ' + (date.getFullYear()) + ' 12:00:00').getTime()
+    const r = new Date('january 1, ' + (date.getFullYear() + 1) + ' 00:00:00').getTime() - new Date('December 31, ' + (date.getFullYear()) + ' 20:00:00').getTime()
+    if (rem > 0 && rem < r) {
+        client.user.setActivity(`${H}h ${M}min ${S}sec avant ${date.getFullYear() + 1} | ${conf.prefix}acc`);
+        setInterval(() => { updateActivity(conf) }, 1000)
+    } else if (rem > f || rem === 0) {
+        const n = rem === 0 ? nDate.getFullYear() : date.getFullYear();
+        client.user.setActivity(` bonne année ${n} ! | ${conf.prefix}acc`)
+        const ch = <Discord.TextChannel><Discord.Channel>client.channels.get('648229020260892682')
+        //ch.send('Bonne année !');
+    } else {
+        client.user.setActivity(`${conf.prefix}acc`)
+    }
 }
 
 Initialization().then(AfterInitialization);
