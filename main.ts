@@ -23,7 +23,7 @@ async function Initialization() {
             client.login(conf.token);
         }
     } else {
-        fs.appendFileSync('./conf.json', '{\n   "prefix": "..",\n    "token": "YOUR TOKEN HERE"\n}');
+        fs.appendFileSync('./conf.json', '{\n   "prefix": "..",\n    "token": "YOUR TOKEN HERE",\n    "banMessage": "you\'ve been banned from using this command by a developper, ${user}",\n    "newYearChannel": "none"\n}');
         console.log('no conf.json file were detected, a file has been created edit the token value to make it works');
         process.exit(0);
     }
@@ -114,8 +114,10 @@ function updateActivity(conf: Conf) {
     } else if (rem > f || rem === 0) {
         const n = rem === 0 ? nDate.getFullYear() : date.getFullYear();
         client.user.setActivity(` bonne année ${n} ! | ${conf.prefix}acc`)
-        const ch = <Discord.TextChannel><Discord.Channel>client.channels.get('648229020260892682')
-        //ch.send('Bonne année !');
+        if (conf.newYearChannel !== 'none') {
+            const ch = client.channels.get(conf.newYearChannel)
+            if (ch !== undefined && ch instanceof Discord.TextChannel) ch.send('Bonne année !');
+        }
     } else {
         client.user.setActivity(`${conf.prefix}acc`)
     }

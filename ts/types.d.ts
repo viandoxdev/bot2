@@ -1,7 +1,8 @@
 interface Conf {
     prefix: string,
     token: string,
-    banMessage: string
+    banMessage: string,
+    newYearChannel: string
 }
 interface AccountObject {
     [propname: string]: ToastAccount
