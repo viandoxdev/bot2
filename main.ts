@@ -110,7 +110,7 @@ function updateActivity(conf: Conf) {
     const r = new Date('january 1, ' + (date.getFullYear() + 1) + ' 00:00:00').getTime() - new Date('December 31, ' + (date.getFullYear()) + ' 20:00:00').getTime()
     if (rem > 0 && rem < r) {
         client.user.setActivity(`${H}h ${M}min ${S}sec avant ${date.getFullYear() + 1} | ${conf.prefix}acc`);
-        setInterval(() => { updateActivity(conf) }, 1000)
+        setTimeout(() => { updateActivity(conf) }, 1000)
     } else if (rem > f || rem === 0) {
         const n = rem === 0 ? nDate.getFullYear() : date.getFullYear();
         client.user.setActivity(` bonne année ${n} ! | ${conf.prefix}acc`)
