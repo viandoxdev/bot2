@@ -67,6 +67,9 @@ export default {
     },
     nearestPow2(aSize: number) {
         return Math.pow(2, Math.round(Math.log(aSize) / Math.log(2)));
+    },
+    timeout(ms: number) {
+        return new Promise(resolve => setTimeout(resolve, ms))
     }
 }
 

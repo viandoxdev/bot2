@@ -67,7 +67,7 @@ function AfterInitialization({ conf, accs }: { conf: Conf, accs: AccountObject }
         if (msg.content.startsWith(conf.prefix)) {
             const noPrefixSplitedcommand = () => {
                 let res = "";
-                let t = msg.content.split(' ');
+                let t = (<RegExpMatchArray>msg.content.match(/(?:\\ |[^ ])+/g)).map(e => e.replace(/\\(?= )/g, " "));
                 let com1 = t.splice(0, 1).join('');
                 let com = com1.slice(conf.prefix.length, com1.length);
                 let args = t;
