@@ -17,8 +17,8 @@ export default async function _(accs: AccountObject, msg: Discord.Message, clien
     const bg = typeof args[4] === 'string' ? args[4] : "transparent";
     const fg = typeof args[3] === 'string' ? args[3] : "white";
 
-    if (acc.rank < 2 && mode) {
-        msg.channel.send("spelling feature disabled for regular users");
+    if (acc.rank < 2 && mode) { // block spelling feature if not enough permission
+        msg.channel.send("spelling feature disabled for regular users,\nit spams too much");
         return accs
     }
 
